@@ -1,4 +1,6 @@
 using ApplicationTrackingSystem.Data;
+using ApplicationTrackingSystem.DataAccess.Data.Repository.IRepository;
+using ApplicationTrackingSystem.DataAccess.Data.Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,6 +17,9 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders().AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 builder.Services.AddRazorPages();
+builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
