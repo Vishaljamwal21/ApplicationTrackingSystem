@@ -28,4 +28,8 @@
     <ProjectReference Include="..\ApplicationTrackingSystem.Utility\ApplicationTrackingSystem.Utility.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\JobPost\" />
+  </ItemGroup>
+
 </Project>
