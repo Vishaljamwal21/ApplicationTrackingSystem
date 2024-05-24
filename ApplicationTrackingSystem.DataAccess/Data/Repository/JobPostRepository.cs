@@ -9,19 +9,14 @@ using System.Threading.Tasks;
 
 namespace ApplicationTrackingSystem.DataAccess.Data.Repository
 {
-    public class UnitOfWork : IUnitOfWork
+    public class JobPostRepository : Repository<JobPost>, IJobPostRepository
     {
         private readonly ApplicationDbContext _context;
-        public UnitOfWork(ApplicationDbContext context)
+        public JobPostRepository(ApplicationDbContext context) : base(context)
         {
-            _context=context;
-            JobPost = new JobPostRepository(context);
+            _context = context;
         }
-        public IJobPostRepository JobPost { private set; get; }
 
-        public void Save()
-        {
-           _context.SaveChanges();
-        }
     }
+
 }
