@@ -12,46 +12,38 @@ namespace ApplicationTrackingSystem.DataAccess.Data.Repository
     public class Repository<T> : IRepository<T> where T : class
     {
         private readonly ApplicationDbContext _context;
-        internal DbSet<T> DbSet;
+        internal DbSet<T> dbset;
 
         public Repository(ApplicationDbContext context)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
-            DbSet = _context.Set<T>();
+            _context = context;
+            dbset = _context.Set<T>();
         }
-
-        public async Task AddAsync(T entity)
+        public void Add(T entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            await DbSet.AddAsync(entity).ConfigureAwait(false);
+            dbset.Add(entity);
         }
-
-        public async Task<T> FirstOrDefaultAsync(Expression<Func<T, bool>> filter = null, string includeProperties = null)
+        public T FirstorDefault(Expression<Func<T, bool>> filter = null, string includeProperties = null)
         {
-            IQueryable<T> query = DbSet;
+            IQueryable<T> query = dbset;
             if (filter != null)
                 query = query.Where(filter);
             if (includeProperties != null)
             {
-                foreach (var includeprop in includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                foreach (var includeProp in includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
-                    query = query.Include(includeprop);
+                    query = query.Include(includeProp);
                 }
             }
-            return await query.FirstOrDefaultAsync().ConfigureAwait(false);
+            return query.FirstOrDefault();
         }
-
-        public async Task<T> GetByIdAsync(int id)
+        public T Get(int id)
         {
-            return await DbSet.FindAsync(id).ConfigureAwait(false);
+            return dbset.Find(id);
         }
-
-        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter = null,
-            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = null)
+        public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = null)
         {
-            IQueryable<T> query = DbSet;
+            IQueryable<T> query = dbset;
             if (filter != null)
                 query = query.Where(filter);
             if (includeProperties != null)
@@ -62,60 +54,28 @@ namespace ApplicationTrackingSystem.DataAccess.Data.Repository
                 }
             }
             if (orderBy != null)
-                return await orderBy(query).ToListAsync().ConfigureAwait(false);
-            return await query.ToListAsync().ConfigureAwait(false);
-        }
+                return orderBy(query).ToList();
+            return query.ToList();
 
+
+        }
         public void Remove(T entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            DbSet.Remove(entity);
+            dbset.Remove(entity);
         }
-
         public void Remove(int id)
         {
-            T entityToRemove = DbSet.Find(id);
-            if (entityToRemove != null)
-                DbSet.Remove(entityToRemove);
+            dbset.Remove(Get(id));
         }
-
-        public void RemoveRange(IEnumerable<T> entities)
+        public void RemoveRange(IEnumerable<T> values)
         {
-            if (entities == null)
-                throw new ArgumentNullException(nameof(entities));
-
-            DbSet.RemoveRange(entities);
+            dbset.RemoveRange(values);
         }
-
         public void Update(T entity)
         {
-            if (entity == null)
-                throw new ArgumentNullException(nameof(entity));
-
-            _context.Entry(entity).State = EntityState.Modified;
+            _context.ChangeTracker.Clear();
+            dbset.Update(entity);
         }
-
-        public void Add(T entity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public T Get(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerable<T> GetAll(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public T FirstorDefault(Expression<Func<T, bool>> filter = null, string includeProperties = null)
-        {
-            throw new NotImplementedException();
-        }
-        // Method implementations removed, as they are not needed and were throwing exceptions.
     }
 }
+

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using ApplicationTrackingSystem.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApplicationTrackingSystem.Data
@@ -9,5 +10,6 @@ namespace ApplicationTrackingSystem.Data
             : base(options)
         {
         }
+        public DbSet<JobPost>JobPosts { get; set; }
     }
 }
