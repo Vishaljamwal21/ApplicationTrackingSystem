@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ApplicationTrackingSystem.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,10 +7,7 @@ using System.Threading.Tasks;
 
 namespace ApplicationTrackingSystem.DataAccess.Data.Repository.IRepository
 {
-    public interface IUnitOfWork
+    public interface IApplyJobRepository:IRepository<Applyjob>
     {
-        public IJobPostRepository JobPost { get; }
-        public IApplyJobRepository ApplyJob { get; }
-        void Save();
     }
 }

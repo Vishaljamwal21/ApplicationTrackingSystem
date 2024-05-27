@@ -77,7 +77,7 @@
                     <p><strong>Description:</strong> @Model.Description</p>
                     <p><strong>Contact:</strong> <a href="mailto:abhithakur2416@gmail.com">abhithakur2416@gmail.com</a></p>
                     <p><strong>Last Date to Apply:</strong> @Model.ToDate.ToString("yyyy-MM-dd")</p>
-                    <a href="@Url.Action("Apply", "JobPost", new { id = Model.Id })" class="btn btn-primary">Apply</a>
+                    <a href="@Url.Action("Create", "ApplyJob", new { jobPostId = Model.Id })" class="btn btn-primary">Apply</a>
                     <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
                 </div>
             </div>
