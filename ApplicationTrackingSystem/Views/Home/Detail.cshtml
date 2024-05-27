@@ -1,0 +1,87 @@
+﻿@model ApplicationTrackingSystem.Models.JobPost
+
+@{
+    ViewData["Title"] = "Detail";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ApplicationTrackingSystem</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .detail-title {
+            color: crimson;
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .detail-body p {
+            margin: 0.5rem 0;
+            padding-bottom: 5px;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        h1 {
+            color: #808080;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            border-color: #6c757d;
+        }
+
+            .btn-secondary:hover {
+                background-color: #5a6268;
+                border-color: #545b62;
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            margin-right: 10px;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+                border-color: #004085;
+            }
+
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>@ViewData["Title"]</h1>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 offset-md-2 mb-4">
+                <div class="detail-body">
+                    <h5 class="detail-title">@Model.Title</h5>
+                    <p><strong>Skill:</strong> @Model.CandidateSkill</p>
+                    <p><strong>Experience:</strong> @Model.Experience</p>
+                    <p><strong>Qualification:</strong> @Model.Qualification</p>                    
+                    <p><strong>Description:</strong> @Model.Description</p>
+                    <p><strong>Contact:</strong> <a href="mailto:abhithakur2416@gmail.com">abhithakur2416@gmail.com</a></p>
+                    <p><strong>Last Date to Apply:</strong> @Model.ToDate.ToString("yyyy-MM-dd")</p>
+                    <a href="@Url.Action("Apply", "JobPost", new { id = Model.Id })" class="btn btn-primary">Apply</a>
+                    <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

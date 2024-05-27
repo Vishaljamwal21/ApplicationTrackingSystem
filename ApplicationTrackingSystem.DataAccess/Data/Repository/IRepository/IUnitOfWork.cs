@@ -8,6 +8,7 @@ namespace ApplicationTrackingSystem.DataAccess.Data.Repository.IRepository
 {
     public interface IUnitOfWork
     {
+        public IJobPostRepository JobPost { get; }
         void Save();
     }
 }

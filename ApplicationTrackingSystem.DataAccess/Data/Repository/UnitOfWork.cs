@@ -1,5 +1,6 @@
 ﻿using ApplicationTrackingSystem.Data;
 using ApplicationTrackingSystem.DataAccess.Data.Repository.IRepository;
+using ApplicationTrackingSystem.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,9 @@ namespace ApplicationTrackingSystem.DataAccess.Data.Repository
         public UnitOfWork(ApplicationDbContext context)
         {
             _context=context;
+            JobPost = new JobPostRepository(context);
         }
+        public IJobPostRepository JobPost { private set; get; }
 
         public void Save()
         {

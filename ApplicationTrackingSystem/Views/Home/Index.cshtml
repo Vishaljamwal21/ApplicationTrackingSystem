@@ -1,8 +1,82 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<ApplicationTrackingSystem.Models.JobPost>
+
+@{
+    ViewData["Title"] = "Job Posts";
+    var todayDate = ViewBag.TodayDate as string;
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ApplicationTrackingSystem</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            border: 2px solid #808080;
+            transition: transform 0.3s;
+        }
+
+            .card:hover {
+                transform: scale(1.05);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+        .card-title {
+            color: crimson;
+            font-weight: bold;
+            font-size: 1.5rem; /* Increased font size */
+        }
+
+        .card-body p {
+            margin: 0.5rem 0;
+        }
+
+        .container {
+            margin-top: 20px;
+        }
+
+        h2 {
+            color: #808080;
+            font-weight: bold;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+            <h2>@ViewData["Title"]</h2>
+        </div>
+        <div class="row">
+            @foreach (var jobPost in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="card-title"> @jobPost.Title</p>
+                            <p><strong>Skill:</strong> @jobPost.CandidateSkill</p>
+                            <p><strong>Experience:</strong> @jobPost.Experience</p>
+                            <p><strong>Qualification:</strong> @jobPost.Qualification</p>
+                            <p><strong>Last Date to Apply:</strong> @jobPost.ToDate.ToString("yyyy-MM-dd")</p>
+                            <a href="@Url.Action("Detail", "Home", new { id = jobPost.Id })" class="btn btn-primary">Detail</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#jobPostsTable').DataTable();
+        });
+    </script>
+</body>
+</html>
