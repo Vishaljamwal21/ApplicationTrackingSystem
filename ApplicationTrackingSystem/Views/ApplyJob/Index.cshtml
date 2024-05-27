@@ -1,0 +1,120 @@
+﻿@model IEnumerable<ApplicationTrackingSystem.Models.Applyjob>
+
+@{
+    ViewData["Title"] = "Review Applied Jobs";
+}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.7/pdfobject.min.js"></script>
+
+<h2>Review Candidate Job</h2>
+
+<!-- Search input field -->
+<input type="text" id="searchInput" placeholder="Search..." class="form-control mb-2">
+
+<table id="jobsTable" class="table">
+    <thead>
+        <tr>
+            <th>Name <a href="#" onclick="sortTable('Name')">▲</a> <a href="#" onclick="sortTable('Name', 'desc')">▼</a></th>
+            <th>Phone Number <a href="#" onclick="sortTable('PhoneNumber')">▲</a> <a href="#" onclick="sortTable('PhoneNumber', 'desc')">▼</a></th>
+            <th>Email <a href="#" onclick="sortTable('Email')">▲</a> <a href="#" onclick="sortTable('Email', 'desc')">▼</a></th>
+            <th>Brief Yourself <a href="#" onclick="sortTable('BriefYourself')">▲</a> <a href="#" onclick="sortTable('BriefYourself', 'desc')">▼</a></th>
+            <th>Upload CV</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                <td>@Html.DisplayFor(modelItem => item.BriefYourself)</td>
+                <td>
+                    @Html.Raw("<a href='" + Url.Action("DownloadCV", new { id = item.Id }) + "' class='btn btn-info' title='Download'><i class='fas fa-download'></i> Download</a>")
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#pdfModal" onclick="loadPDF(@item.Id)">Preview</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Pagination -->
+<nav>
+    <ul class="pagination">
+        @for (int i = 1; i <= ViewBag.TotalPages; i++)
+        {
+            <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
+                <a class="page-link" href="?pageNumber=@i&pageSize=@ViewBag.PageSize&sortBy=@ViewBag.SortBy&sortOrder=@ViewBag.SortOrder&searchString=@ViewBag.SearchString">@i</a>
+            </li>
+        }
+    </ul>
+</nav>
+
+<!-- Include jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Include DataTables JavaScript -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<!-- Modal -->
+<div class="modal fade" id="pdfModal" tabindex="-1" role="dialog" aria-labelledby="pdfModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pdfModalLabel">PDF Preview</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="pdfPreview" style="height: 500px;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to sort table by column name and direction
+    function sortTable(columnName, direction = 'asc') {
+        var url = window.location.href.split('?')[0]; // Get the current URL without query parameters
+        var searchParams = new URLSearchParams(window.location.search);
+
+        // Set sorting parameters in the URL
+        searchParams.set('sortBy', columnName);
+        searchParams.set('sortOrder', direction);
+        window.location.href = url + '?' + searchParams.toString(); // Redirect to the sorted URL
+    }
+
+    // Function to filter table based on search input
+    $('#searchInput').keyup(function () {
+        var searchText = $(this).val().toLowerCase();
+        $('#jobsTable tbody tr').each(function () {
+            var found = false;
+            $(this).find('td').each(function () {
+                if ($(this).text().toLowerCase().indexOf(searchText) >= 0) {
+                    found = true;
+                    return false; // Exit loop if found
+                }
+            });
+            $(this).toggle(found); // Show/hide row based on search result
+        });
+    });
+
+    // Function to load PDF preview
+    function loadPDF(id) {
+        $.ajax({
+            url: '@Url.Action("GetPDFPath", "ApplyJob")',
+            type: 'GET',
+            data: { id: id },
+            success: function (pdfPath) {
+                PDFObject.embed(pdfPath, "#pdfPreview", {
+                    height: "500px"
+                });
+            }
+        });
+    }
+</script>

@@ -16,8 +16,11 @@ namespace ApplicationTrackingSystem.DataAccess.Data.Repository
         {
             _context=context;
             JobPost = new JobPostRepository(context);
+            ApplyJob = new ApplyJobRepository(context);
         }
         public IJobPostRepository JobPost { private set; get; }
+
+        public IApplyJobRepository ApplyJob { private set; get; }
 
         public void Save()
         {
