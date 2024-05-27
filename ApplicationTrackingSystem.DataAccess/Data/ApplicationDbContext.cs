@@ -11,5 +11,6 @@ namespace ApplicationTrackingSystem.Data
         {
         }
         public DbSet<JobPost>JobPosts { get; set; }
+        public DbSet<Applyjob>applyjobs { get; set; }
     }
 }

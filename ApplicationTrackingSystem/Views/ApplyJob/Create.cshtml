@@ -1,0 +1,52 @@
+﻿@model ApplicationTrackingSystem.Models.Applyjob
+
+@{
+    ViewData["Title"] = "Apply";
+}
+
+
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4 bg-black rounded-2">
+            <h2 class="text-center text-white">@ViewData["Title"]</h2>
+            <form asp-action="Create" method="post" enctype="multipart/form-data">
+                <input type="hidden" asp-for="JobPostId" />
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label text-white">Name<span class="text-danger">*</span></label>
+                    <input asp-for="Name" class="form-control" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PhoneNumber" class="control-label text-white">Phone Number<span class="text-danger">*</span></label>
+                    <input asp-for="PhoneNumber" class="form-control" required />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Email" class="control-label text-white">Email<span class="text-danger">*</span></label>
+                    <input asp-for="Email" class="form-control" required />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="BriefYourself" class="control-label text-white">Brief Yourself<span class="text-danger">*</span></label>
+                    <textarea asp-for="BriefYourself" class="form-control" required></textarea>
+                    <span asp-validation-for="BriefYourself" class="text-danger"></span>
+                </div><br />
+                <div class="form-group">
+                    <label asp-for="UploadCV" class="control-label text-white">Upload CV</label>
+                    <input type="file" name="file" class="form-control-file text-danger" />
+                    <span asp-validation-for="UploadCV" class="text-danger "></span>
+                </div><br />
+                <div class="form-group text-center">
+                    <input type="submit" value="Apply" class="btn btn-primary" />
+                </div><br />
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
