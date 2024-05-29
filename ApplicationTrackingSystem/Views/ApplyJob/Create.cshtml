@@ -4,12 +4,14 @@
     ViewData["Title"] = "Apply";
 }
 
-
-
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-4 bg-black rounded-2">
+        <div class="col-md-6 bg-black rounded-2">
             <h2 class="text-center text-white">@ViewData["Title"]</h2>
+            <!-- Job title box -->
+            <div class="job-title-box text-center bg-light p-2 rounded mb-4">
+                <h5 class="text-dark">@ViewData["JobTitle"]</h5>
+            </div>
             <form asp-action="Create" method="post" enctype="multipart/form-data">
                 <input type="hidden" asp-for="JobPostId" />
                 <div class="form-group">
@@ -50,3 +52,10 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+<style>
+    .job-title-box {
+        border: 2px solid #007bff;
+    }
+</style>
+

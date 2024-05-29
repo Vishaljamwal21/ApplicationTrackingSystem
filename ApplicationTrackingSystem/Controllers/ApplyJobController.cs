@@ -23,14 +23,12 @@ namespace ApplicationTrackingSystem.Controllers
         public IActionResult Index(int pageNumber = 1, int pageSize = 10, string sortBy = "Name", string sortOrder = "asc", string searchString = "")
         {
             // Get the data from the repository
-            var applyJobs = _unitOfWork.ApplyJob.GetAll();
-
+            var applyJobs = _unitOfWork.ApplyJob.GetAll(includeProperties: "JobPost");
             // Apply searching
             if (!string.IsNullOrEmpty(searchString))
             {
                 applyJobs = applyJobs.Where(job => job.Name.Contains(searchString) || job.Email.Contains(searchString));
             }
-
             // Apply sorting
             switch (sortBy)
             {
@@ -40,12 +38,10 @@ namespace ApplicationTrackingSystem.Controllers
                 case "PhoneNumber":
                     applyJobs = sortOrder == "asc" ? applyJobs.OrderBy(job => job.PhoneNumber) : applyJobs.OrderByDescending(job => job.PhoneNumber);
                     break;
-                // Add more cases for other sortable columns as needed
                 default:
                     applyJobs = applyJobs.OrderBy(job => job.Name);
                     break;
             }
-
             // Apply paging
             var totalItems = applyJobs.Count();
             var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
@@ -58,16 +54,24 @@ namespace ApplicationTrackingSystem.Controllers
 
             return View(paginatedJobs);
         }
-
-
         public IActionResult Create(int jobPostId)
         {
+            var jobPost = _unitOfWork.JobPost.Get(jobPostId);
+            if (jobPost == null)
+            {
+                return NotFound();
+            }
+
             var model = new Applyjob
             {
-                JobPostId = jobPostId
+                JobPostId = jobPostId,
+                JobPost = jobPost 
             };
+
+            ViewData["JobTitle"] = jobPost.Title;
             return View(model);
         }
+
 
 
         [HttpPost]

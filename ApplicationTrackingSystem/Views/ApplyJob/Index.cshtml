@@ -15,6 +15,7 @@
 <table id="jobsTable" class="table">
     <thead>
         <tr>
+            <th>Job Title</th>
             <th>Name <a href="#" onclick="sortTable('Name')">▲</a> <a href="#" onclick="sortTable('Name', 'desc')">▼</a></th>
             <th>Phone Number <a href="#" onclick="sortTable('PhoneNumber')">▲</a> <a href="#" onclick="sortTable('PhoneNumber', 'desc')">▼</a></th>
             <th>Email <a href="#" onclick="sortTable('Email')">▲</a> <a href="#" onclick="sortTable('Email', 'desc')">▼</a></th>
@@ -26,6 +27,7 @@
         @foreach (var item in Model)
         {
             <tr>
+                <td>@Html.DisplayFor(modelItem => item.JobPost.Title)</td>
                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                 <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
                 <td>@Html.DisplayFor(modelItem => item.Email)</td>
