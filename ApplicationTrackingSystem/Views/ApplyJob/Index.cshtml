@@ -6,12 +6,29 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.7/pdfobject.min.js"></script>
+<!-- Include jQuery -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
+<!-- Include Bootstrap CSS and JavaScript -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<!-- Include DataTables JavaScript -->
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<!-- Include PDFObject JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.6/pdfobject.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>       
 <h2>Review Candidate Job</h2>
 
-<!-- Search input field -->
-<input type="text" id="searchInput" placeholder="Search..." class="form-control mb-2">
+<!-- Export to Excel button -->
+<div class="mb-2">
+    <a href="@Url.Action("ExportToExcel", "ApplyJob")" class="btn btn-success">Export All to Excel</a>
+</div>
 
+<!-- Search input field -->
+<input type="text"  id="searchInput" placeholder="Search..." class="form-control col-lg-5">
+<br/>
 <table id="jobsTable" class="table">
     <thead>
         <tr>
@@ -19,7 +36,7 @@
             <th>Phone Number <a href="#" onclick="sortTable('PhoneNumber')">▲</a> <a href="#" onclick="sortTable('PhoneNumber', 'desc')">▼</a></th>
             <th>Email <a href="#" onclick="sortTable('Email')">▲</a> <a href="#" onclick="sortTable('Email', 'desc')">▼</a></th>
             <th>Brief Yourself <a href="#" onclick="sortTable('BriefYourself')">▲</a> <a href="#" onclick="sortTable('BriefYourself', 'desc')">▼</a></th>
-            <th>Upload CV</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -31,8 +48,10 @@
                 <td>@Html.DisplayFor(modelItem => item.Email)</td>
                 <td>@Html.DisplayFor(modelItem => item.BriefYourself)</td>
                 <td>
-                    @Html.Raw("<a href='" + Url.Action("DownloadCV", new { id = item.Id }) + "' class='btn btn-info' title='Download'><i class='fas fa-download'></i> Download</a>")
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#pdfModal" onclick="loadPDF(@item.Id)">Preview</button>
+                    <div class="btn-group" role="group" aria-label="Actions">
+                        <a href="@Url.Action("DownloadCV", new { id = item.Id })" class="btn btn-info" title="Download"><i class="fas fa-download"></i> Download CV</a>|
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#pdfModal" onclick="loadPDF('@item.Id')">Preview PDF</button>
+                    </div>
                 </td>
             </tr>
         }
@@ -50,13 +69,6 @@
         }
     </ul>
 </nav>
-
-<!-- Include jQuery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-<!-- Include DataTables JavaScript -->
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-
 <!-- Modal -->
 <div class="modal fade" id="pdfModal" tabindex="-1" role="dialog" aria-labelledby="pdfModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -77,6 +89,55 @@
     </div>
 </div>
 
+<!-- JavaScript functions -->
+@* <script>
+    // Function to sort table by column name and direction
+    function sortTable(columnName, direction = 'asc') {
+        var url = window.location.href.split('?')[0]; // Get the current URL without query parameters
+        var searchParams = new URLSearchParams(window.location.search);
+
+        // Set sorting parameters in the URL
+        searchParams.set('sortBy', columnName);
+        searchParams.set('sortOrder', direction);
+        window.location.href = url + '?' + searchParams.toString(); // Redirect to the sorted URL
+    }
+
+    // Function to filter table based on search input
+    $('#searchInput').keyup(function () {
+        var searchText = $(this).val().toLowerCase();
+        $('#jobsTable tbody tr').each(function () {
+            var found = false;
+            $(this).find('td').each(function () {
+                if ($(this).text().toLowerCase().indexOf(searchText) >= 0) {
+                    found = true;
+                    return false; // Exit loop if found
+                }
+            });
+            $(this).toggle(found); // Show/hide row based on search result
+        });
+    });
+
+    // Function to load PDF preview
+    function loadPDF(id) {
+        $.ajax({
+            url: '@Url.Action("GetPDFPath", "ApplyJob")',
+            type: 'GET',
+            data: { id: id },
+            success: function (pdfPath) {
+                PDFObject.embed(pdfPath, "#pdfPreview", {
+                    height: "500px"
+                });
+                $('#pdfModal').modal('show'); // Open the modal after embedding the PDF
+            }
+        });
+    }
+
+    //Ensure the modal backdrop is removed properly
+    $('#pdfModal').on('hidden.bs.modal', function () {
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+    });
+</script> *@
 <script>
     // Function to sort table by column name and direction
     function sortTable(columnName, direction = 'asc') {
@@ -114,7 +175,16 @@
                 PDFObject.embed(pdfPath, "#pdfPreview", {
                     height: "500px"
                 });
+                $('#pdfModal').modal('show'); // Open the modal after embedding the PDF
             }
         });
     }
+
+    // Ensure the modal backdrop is removed properly
+    $('#pdfModal').on('hidden.bs.modal', function () {
+        $('body').removeClass('modal-open');
+        $('.modal-backdrop').remove();
+        $('body').css('overflow', ''); // Reset the overflow property of the body
+    });
 </script>
+

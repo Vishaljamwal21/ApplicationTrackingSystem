@@ -3,8 +3,10 @@ using ApplicationTrackingSystem.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ApplicationTrackingSystem.Controllers
@@ -18,6 +20,9 @@ namespace ApplicationTrackingSystem.Controllers
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
+
+            // Set EPPlus license context
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
         }
 
         public IActionResult Index(int pageNumber = 1, int pageSize = 10, string sortBy = "Name", string sortOrder = "asc", string searchString = "")
@@ -59,7 +64,6 @@ namespace ApplicationTrackingSystem.Controllers
             return View(paginatedJobs);
         }
 
-
         public IActionResult Create(int jobPostId)
         {
             var model = new Applyjob
@@ -68,7 +72,6 @@ namespace ApplicationTrackingSystem.Controllers
             };
             return View(model);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -117,6 +120,37 @@ namespace ApplicationTrackingSystem.Controllers
                 return NotFound();
             }
             return Json(applyJob.UploadCV);
+        }
+
+        public IActionResult ExportToExcel()
+        {
+            var applyJobs = _unitOfWork.ApplyJob.GetAll();
+
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Apply Jobs");
+
+                worksheet.Cells[1, 1].Value = "Name";
+                worksheet.Cells[1, 2].Value = "Phone Number";
+                worksheet.Cells[1, 3].Value = "Email";
+                worksheet.Cells[1, 4].Value = "Brief Yourself";
+
+                int row = 2;
+                foreach (var applyJob in applyJobs)
+                {
+                    worksheet.Cells[row, 1].Value = applyJob.Name;
+                    worksheet.Cells[row, 2].Value = applyJob.PhoneNumber;
+                    worksheet.Cells[row, 3].Value = applyJob.Email;
+                    worksheet.Cells[row, 4].Value = applyJob.BriefYourself;
+                    row++;
+                }
+
+                worksheet.Cells.AutoFitColumns();
+
+                byte[] excelFile = package.GetAsByteArray();
+
+                return File(excelFile, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ApplyJobs.xlsx");
+            }
         }
     }
 }
