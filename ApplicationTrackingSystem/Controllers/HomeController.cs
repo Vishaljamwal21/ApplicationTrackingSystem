@@ -30,10 +30,6 @@ namespace ApplicationTrackingSystem.Controllers
             return View(jobPosts);
         }
 
-        public IActionResult Privacy()
-        {
-            return View();
-        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

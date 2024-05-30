@@ -2,9 +2,12 @@
 using ApplicationTrackingSystem.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using OfficeOpenXml;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,27 +18,25 @@ namespace ApplicationTrackingSystem.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IWebHostEnvironment _webHostEnvironment;
-
-        public ApplyJobController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment)
+        private readonly IEmailSender _emailSender;
+        public ApplyJobController(IUnitOfWork unitOfWork, IWebHostEnvironment webHostEnvironment, IEmailSender emailSender)
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
-
             // Set EPPlus license context
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            _emailSender = emailSender;
         }
 
         public IActionResult Index(int pageNumber = 1, int pageSize = 10, string sortBy = "Name", string sortOrder = "asc", string searchString = "")
         {
             // Get the data from the repository
-            var applyJobs = _unitOfWork.ApplyJob.GetAll();
-
+            var applyJobs = _unitOfWork.ApplyJob.GetAll(includeProperties: "JobPost");
             // Apply searching
             if (!string.IsNullOrEmpty(searchString))
             {
                 applyJobs = applyJobs.Where(job => job.Name.Contains(searchString) || job.Email.Contains(searchString));
             }
-
             // Apply sorting
             switch (sortBy)
             {
@@ -45,12 +46,10 @@ namespace ApplicationTrackingSystem.Controllers
                 case "PhoneNumber":
                     applyJobs = sortOrder == "asc" ? applyJobs.OrderBy(job => job.PhoneNumber) : applyJobs.OrderByDescending(job => job.PhoneNumber);
                     break;
-                // Add more cases for other sortable columns as needed
                 default:
                     applyJobs = applyJobs.OrderBy(job => job.Name);
                     break;
             }
-
             // Apply paging
             var totalItems = applyJobs.Count();
             var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
@@ -60,19 +59,25 @@ namespace ApplicationTrackingSystem.Controllers
             ViewBag.SortOrder = sortOrder;
             ViewBag.SortBy = sortBy;
             ViewBag.SearchString = searchString;
-
             return View(paginatedJobs);
         }
-
         public IActionResult Create(int jobPostId)
         {
+            var jobPost = _unitOfWork.JobPost.Get(jobPostId);
+            if (jobPost == null)
+            {
+                return NotFound();
+            }
+
             var model = new Applyjob
             {
-                JobPostId = jobPostId
+                JobPostId = jobPostId,
+                JobPost = jobPost 
             };
+
+            ViewData["JobTitle"] = jobPost.Title;
             return View(model);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Applyjob applyJob, IFormFile file)
@@ -90,9 +95,15 @@ namespace ApplicationTrackingSystem.Controllers
                     }
                     applyJob.UploadCV = "/files/cv/" + uniqueFileName;
                 }
-
                 _unitOfWork.ApplyJob.Add(applyJob);
                 _unitOfWork.Save();
+                var jobPost = _unitOfWork.JobPost.Get(applyJob.JobPostId);
+                string applicantName = applyJob.Name ?? "Applicant";
+                string applicantEmail = applyJob.Email ?? "no-reply@yourdomain.com";
+                string jobTitle = jobPost?.Title ?? "the job position";
+                string subject = "Application Received";
+                string message = $"Dear {applicantName},<br><br>Thank you for applying for the {jobTitle} position. We have received your application and will review it shortly.<br><br>Best regards,<br>Application Tracking System";
+                await _emailSender.SendEmailAsync(applicantEmail, subject, message);
                 return RedirectToAction(nameof(Index));
             }
             return View(applyJob);
@@ -151,6 +162,38 @@ namespace ApplicationTrackingSystem.Controllers
 
                 return File(excelFile, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "ApplyJobs.xlsx");
             }
+        }
+
+        [HttpPost]
+        public IActionResult AddToShortlist(int id)
+        {
+            var applyJob = _unitOfWork.ApplyJob.Get(id);
+            if (applyJob == null)
+            {
+                return NotFound();
+            }
+
+            var shortlistedJob = new
+            {
+                Id = applyJob.Id,
+                Name = applyJob.Name,
+                PhoneNumber = applyJob.PhoneNumber,
+                Email = applyJob.Email
+            };
+
+            return Json(shortlistedJob);
+        }
+
+        [HttpPost]
+        public IActionResult RemoveFromShortlist(int id)
+        {
+            var applyJob = _unitOfWork.ApplyJob.Get(id);
+            if (applyJob == null)
+            {
+                return NotFound();
+            }
+
+            return Json(new { Id = applyJob.Id });
         }
     }
 }

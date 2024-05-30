@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "TEST";
+}
+<h1 class="text-center">@ViewData["Title"]</h1>
+
+@{
+    var selectedLink = TempData["SelectedLink"] as string;
+}
+
+<div class="container-fluid d-flex justify-content-center align-items-center" style="height: 100vh;">
+    @if (!string.IsNullOrEmpty(selectedLink))
+    {
+        <iframe src="@selectedLink" width="100%" height="100%" frameborder="0" marginwidth="0" marginheight="0" style="border: none; max-width: 100%; max-height: 100vh;" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen></iframe>
+    }
+    else
+    {
+        <p class="text-center">No test link selected.</p>
+    }
+</div>
+
