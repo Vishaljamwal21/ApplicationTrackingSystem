@@ -9,7 +9,7 @@ namespace ApplicationTrackingSystem.Controllers
         {
             return View();
         }
-        [HttpPost("SaveSelectedLink")]
+        [HttpPost]
         public IActionResult SaveSelectedLink([FromBody] ScheduleTestModel model)
         {
             if (ModelState.IsValid)
