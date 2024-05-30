@@ -3,22 +3,6 @@
 @{
     ViewData["Title"] = "Review Applied Jobs";
 }
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.7/pdfobject.min.js"></script>
-<!-- Include jQuery -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
-<!-- Include Bootstrap CSS and JavaScript -->
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-<!-- Include DataTables JavaScript -->
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-
-<!-- Include PDFObject JavaScript -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.6/pdfobject.min.js"></script>
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>       
 <h2>Review Candidate Job</h2>
 
 <!-- Export to Excel button -->
@@ -32,18 +16,21 @@
 <table id="jobsTable" class="table">
     <thead>
         <tr>
+            <th>S.No.</th>
             <th>Job Title</th>
             <th>Name <a href="#" onclick="sortTable('Name')">▲</a> <a href="#" onclick="sortTable('Name', 'desc')">▼</a></th>
             <th>Phone Number <a href="#" onclick="sortTable('PhoneNumber')">▲</a> <a href="#" onclick="sortTable('PhoneNumber', 'desc')">▼</a></th>
             <th>Email <a href="#" onclick="sortTable('Email')">▲</a> <a href="#" onclick="sortTable('Email', 'desc')">▼</a></th>
             <th>Brief Yourself <a href="#" onclick="sortTable('BriefYourself')">▲</a> <a href="#" onclick="sortTable('BriefYourself', 'desc')">▼</a></th>
-            <th>Actions</th>
+            <th>Action Buttons</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
+
+                <td><input type="checkbox" class="shortlist-checkbox" data-id="@item.Id" /></td>
                 <td>@Html.DisplayFor(modelItem => item.JobPost.Title)</td>
                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                 <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
@@ -59,7 +46,6 @@
         }
     </tbody>
 </table>
-
 <!-- Pagination -->
 <nav>
     <ul class="pagination">
@@ -71,6 +57,23 @@
         }
     </ul>
 </nav>
+<!-- Shortlist section -->
+<h3>Shortlisted Candidates</h3>
+<table id="shortlistTable" class="table">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Phone Number</th>
+            <th>Email</th>
+        </tr>
+    </thead>
+    <tbody>
+       
+    </tbody>
+</table><br />
+
+<!-- Skill Test Button -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#skillTestModal" id="scheduleSkillTestBtn" style="display: none;">Schedule Skill Test</button>
 <!-- Modal -->
 <div class="modal fade" id="pdfModal" tabindex="-1" role="dialog" aria-labelledby="pdfModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -91,67 +94,123 @@
     </div>
 </div>
 
-<!-- JavaScript functions -->
-@* <script>
-    // Function to sort table by column name and direction
-    function sortTable(columnName, direction = 'asc') {
-        var url = window.location.href.split('?')[0]; // Get the current URL without query parameters
-        var searchParams = new URLSearchParams(window.location.search);
-
-        // Set sorting parameters in the URL
-        searchParams.set('sortBy', columnName);
-        searchParams.set('sortOrder', direction);
-        window.location.href = url + '?' + searchParams.toString(); // Redirect to the sorted URL
-    }
-
-    // Function to filter table based on search input
-    $('#searchInput').keyup(function () {
-        var searchText = $(this).val().toLowerCase();
-        $('#jobsTable tbody tr').each(function () {
-            var found = false;
-            $(this).find('td').each(function () {
-                if ($(this).text().toLowerCase().indexOf(searchText) >= 0) {
-                    found = true;
-                    return false; // Exit loop if found
-                }
-            });
-            $(this).toggle(found); // Show/hide row based on search result
-        });
-    });
-
-    // Function to load PDF preview
-    function loadPDF(id) {
-        $.ajax({
-            url: '@Url.Action("GetPDFPath", "ApplyJob")',
-            type: 'GET',
-            data: { id: id },
-            success: function (pdfPath) {
-                PDFObject.embed(pdfPath, "#pdfPreview", {
-                    height: "500px"
-                });
-                $('#pdfModal').modal('show'); // Open the modal after embedding the PDF
-            }
-        });
-    }
-
-    //Ensure the modal backdrop is removed properly
-    $('#pdfModal').on('hidden.bs.modal', function () {
-        $('body').removeClass('modal-open');
-        $('.modal-backdrop').remove();
-    });
-</script> *@
+<!-- Skill Test Modal -->
+<div class="modal fade" id="skillTestModal" tabindex="-1" role="dialog" aria-labelledby="skillTestModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="skillTestModalLabel">Schedule Skill Test</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="skillTestForm">
+                    <div class="form-group">
+                        <label for="testType">Test Type</label>
+                        <select class="form-control" id="testType" name="testType">
+                            <option value="Technical">Technical</option>
+                            <option value="Aptitude">Aptitude</option>
+                            <option value="HR">HR</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="testDate">Test Date</label>
+                        <input type="date" class="form-control" id="testDate" name="testDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="startTime">Start Time</label>
+                        <input type="time" class="form-control" id="startTime" name="startTime">
+                    </div>
+                    <div class="form-group">
+                        <label for="duration">Duration (Min)</label>
+                        <input type="number" class="form-control" id="duration" name="duration">
+                    </div>
+                    <div class="form-group">
+                        <label for="formLink">Select Form Link</label>
+                        <select class="form-control" id="formLink" name="formLink">
+                            <option value="">Select a form</option>
+                            <option value="level1">Level-1</option>
+                            <option value="level2">Level-2</option>
+                            <!-- Add more options as needed -->
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="scheduleTest()">Schedule</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
+    function showFormLink() {
+        var formLink = document.getElementById('formLink').value;
+        var formLinkSection = document.getElementById('formLinkSection');
+        var embeddedForm = document.getElementById('embeddedForm');
+
+        if (formLink === 'level1') {
+            embeddedForm.src = "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAU9ZmUlUREtVWjZHRUFTQThIRTUyNzNGUzUxNEdFNS4u&embed=true";
+            formLinkSection.style.display = 'block';
+        } else if (formLink === 'level2') {
+            embeddedForm.src = "https://forms.office.com/Pages/ResponsePage.aspx?id=exampleLevel2Link&embed=true"; // Replace with actual URL
+            formLinkSection.style.display = 'block';
+        } else {
+            formLinkSection.style.display = 'none';
+        }
+    }
+
+    function scheduleTest() {
+        var testType = $('#testType').val();
+        var testDate = $('#testDate').val();
+        var startTime = $('#startTime').val();
+        var duration = $('#duration').val();
+        var formLink = $('#formLink').val();
+
+        var selectedLink = '';
+        if (formLink === 'level1') {
+            selectedLink = "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAU9ZmUlUREtVWjZHRUFTQThIRTUyNzNGUzUxNEdFNS4u";
+        } else if (formLink === 'level2') {
+            selectedLink = "https://forms.office.com/Pages/ResponsePage.aspx?id=exampleLevel2Link"; // Replace with actual URL
+        }
+
+        var data = {
+            testType: testType,
+            testDate: testDate,
+            startTime: startTime,
+            duration: duration,
+            selectedLink: selectedLink
+        };
+
+        $.ajax({
+            url: '@Url.Action("SaveSelectedLink", "TestLink")',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                if (response.success) {
+                    alert('Skill test scheduled successfully.');
+                    $('#skillTestModal').modal('hide');
+                } else {
+                    alert('Failed to schedule skill test.');
+                }
+            },
+            error: function () {
+                alert('Error scheduling skill test.');
+            }
+        });
+    }
     // Function to sort table by column name and direction
     function sortTable(columnName, direction = 'asc') {
-        var url = window.location.href.split('?')[0]; // Get the current URL without query parameters
+        var url = window.location.href.split('?')[0]; 
         var searchParams = new URLSearchParams(window.location.search);
 
         // Set sorting parameters in the URL
         searchParams.set('sortBy', columnName);
         searchParams.set('sortOrder', direction);
-        window.location.href = url + '?' + searchParams.toString(); // Redirect to the sorted URL
+        window.location.href = url + '?' + searchParams.toString(); 
     }
-
     // Function to filter table based on search input
     $('#searchInput').keyup(function () {
         var searchText = $(this).val().toLowerCase();
@@ -160,7 +219,7 @@
             $(this).find('td').each(function () {
                 if ($(this).text().toLowerCase().indexOf(searchText) >= 0) {
                     found = true;
-                    return false; // Exit loop if found
+                    return false; 
                 }
             });
             $(this).toggle(found); // Show/hide row based on search result
@@ -177,8 +236,57 @@
                 PDFObject.embed(pdfPath, "#pdfPreview", {
                     height: "500px"
                 });
-                $('#pdfModal').modal('show'); // Open the modal after embedding the PDF
             }
         });
     }
+
+    // Handle shortlist checkbox click
+    $('.shortlist-checkbox').change(function () {
+        var id = $(this).data('id');
+        if ($(this).is(':checked')) {
+            addShortlist(id);
+        } else {
+            removeShortlist(id);
+        }
+    });
+
+    function addShortlist(id) {
+        $.ajax({
+            url: '@Url.Action("AddToShortlist", "ApplyJob")',
+            type: 'POST',
+            data: { id: id },
+            success: function (data) {
+                var row = `<tr data-id="${data.id}"><td>${data.name}</td><td>${data.phoneNumber}</td><td>${data.email}</td></tr>`;
+                $('#shortlistTable tbody').append(row);
+                updateShortlistCount();
+            }
+        });
+    }
+
+    function removeShortlist(id) {
+        $.ajax({
+            url: '@Url.Action("RemoveFromShortlist", "ApplyJob")',
+            type: 'POST',
+            data: { id: id },
+            success: function (data) {
+                $(`#shortlistTable tbody tr[data-id="${data.id}"]`).remove();
+                updateShortlistCount();
+            }
+        });
+    }
+
+    function updateShortlistCount() {
+        var count = $('#shortlistTable tbody tr').length;
+        if (count > 0) {
+            $('#scheduleSkillTestBtn').show();
+        } else {
+            $('#scheduleSkillTestBtn').hide();
+        }
+    }
+
+    // Initial check to show/hide the Schedule Skill Test button
+    $(document).ready(function() {
+        updateShortlistCount();
+    });
 </script>
+
