@@ -22,6 +22,8 @@ namespace ApplicationTrackingSystem.DataAccess.Data.Repository
 
         public IApplyJobRepository ApplyJob { private set; get; }
 
+        public IApplicationUserRepository ApplicationUser {  private set; get; }
+
         public void Save()
         {
            _context.SaveChanges();

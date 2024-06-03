@@ -10,6 +10,7 @@ namespace ApplicationTrackingSystem.DataAccess.Data.Repository.IRepository
     {
         public IJobPostRepository JobPost { get; }
         public IApplyJobRepository ApplyJob { get; }
+        public IApplicationUserRepository ApplicationUser { get; }
         void Save();
     }
 }
