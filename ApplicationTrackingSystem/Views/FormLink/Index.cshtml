@@ -1,0 +1,50 @@
+﻿@model IEnumerable<ApplicationTrackingSystem.Models.FormLinks>
+
+@{
+    ViewData["Title"] = "Form Links";
+}
+
+<h2>Form Links</h2>
+
+<p>
+    <a asp-action="CreateOrEdit" class="btn btn-primary">Create New</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Links)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr id="row-@item.Id">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Links)
+                </td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-sm btn-warning" onclick="editItem('@item.Id')">Edit</button>
+
+                        |
+                        <button type="button" class="btn btn-sm btn-danger" onclick="deleteItem(@item.Id)">Delete</button>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script src="~/js/ApplyJob.js"></script>
+}
