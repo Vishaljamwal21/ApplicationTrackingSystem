@@ -30,7 +30,6 @@ namespace ApplicationTrackingSystem.Controllers
 
         public IActionResult Index(int pageNumber = 1, int pageSize = 10, string sortBy = "Name", string sortOrder = "asc", string searchString = "")
         {
-            // Get the data from the repository
             var applyJobs = _unitOfWork.ApplyJob.GetAll(includeProperties: "JobPost");
             // Apply searching
             if (!string.IsNullOrEmpty(searchString))

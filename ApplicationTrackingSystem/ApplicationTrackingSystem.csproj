@@ -33,6 +33,7 @@
   <ItemGroup>
     <Folder Include="Views\JobPost\" />
     <Folder Include="wwwroot\Files\CV\" />
+    <Folder Include="wwwroot\Files\CV\" />
   </ItemGroup>
 
 </Project>

@@ -68,7 +68,25 @@
         </tr>
     </thead>
     <tbody>
-       
+        <!-- "No Records Found" Modal -->
+        <div class="modal fade" id="noRecordsModal" tabindex="-1" role="dialog" aria-labelledby="noRecordsModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="noRecordsModalLabel">No Records Found</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        No records were found matching your criteria.
+                    </div>
+                    <div class="modal-footer">                    
+                        <button type="button" class="btn btn-secondary" onclick="navigateBack()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </tbody>
 </table><br />
 
@@ -96,6 +114,7 @@
 
 <!-- Skill Test Modal -->
 <div class="modal fade" id="skillTestModal" tabindex="-1" role="dialog" aria-labelledby="skillTestModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -142,6 +161,26 @@
         </div>
     </div>
 </div>
+
 @section Scripts {
     <script src="~/js/ApplyJob.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Function to show modal when no records are found
+            function showNoRecordsModal() {
+                $('#noRecordsModal').modal('show');
+            }
+
+            // Check if the jobs table is empty
+            if ($('#jobsTable tbody').children().length === 0) {
+                // Show the modal
+                showNoRecordsModal();
+            }
+        });
+    </script>
+    <script>
+        function navigateBack() {
+            $('#noRecordsModal').modal('hide'); // Close the modal
+        }
+    </script>
 }
