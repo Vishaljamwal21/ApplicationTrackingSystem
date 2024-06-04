@@ -28,6 +28,10 @@ namespace ApplicationTrackingSystem.Models
         [Required]
         [StringLength(500)]
         public string BriefYourself { get; set; }
+        [Required] 
+         public string Experience { get; set; }
+        [Required]
+        public string Skills { get; set; }
 
         public string UploadCV { get; set; }
         // Foreign key property

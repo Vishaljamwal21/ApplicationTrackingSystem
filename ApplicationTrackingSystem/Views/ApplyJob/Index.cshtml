@@ -22,6 +22,8 @@
             <th>Phone No. <a href="#" onclick="sortTable('PhoneNumber')">▲</a> <a href="#" onclick="sortTable('PhoneNumber', 'desc')">▼</a></th>
             <th>Email <a href="#" onclick="sortTable('Email')">▲</a> <a href="#" onclick="sortTable('Email', 'desc')">▼</a></th>
             <th>Brief Yourself</th>
+            <th>Experience</th>
+            <th>Skills</th>
             <th>Action Buttons</th>
         </tr>
     </thead>
@@ -36,6 +38,8 @@
                 <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
                 <td>@Html.DisplayFor(modelItem => item.Email)</td>
                 <td>@Html.DisplayFor(modelItem => item.BriefYourself)</td>
+                <td>@Html.DisplayFor(modelItem => item.Experience)</td>
+                <td>@Html.DisplayFor(modelItem => item.Skills)</td>
                 <td>
                     <div class="btn-group" role="group" aria-label="Actions">
                         <a href="@Url.Action("DownloadCV", new { id = item.Id })" class="btn btn-info" title="Download"><i class="fas fa-download"></i> Download CV</a>|

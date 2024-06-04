@@ -213,3 +213,16 @@ $(document).ready(function () {
 function dismissModal() {
     $('#skillTestModal').modal('hide');
 }
+// Function to load PDF preview
+function loadPDF(id) {
+    $.ajax({
+        url: '/ApplyJob/GetPDFPath',
+        type: 'GET',
+        data: { id: id },
+        success: function (pdfPath) {
+            PDFObject.embed(pdfPath, "#pdfPreview", {
+                height: "500px"
+            });
+        }
+    });
+}
