@@ -57,6 +57,7 @@
         }
     </ul>
 </nav>
+<hr />
 <!-- Shortlist section -->
 <h3>Shortlisted Candidates</h3>
 <table id="shortlistTable" class="table">
@@ -73,7 +74,8 @@
 </table><br />
 
 <!-- Skill Test Button -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#skillTestModal" id="scheduleSkillTestBtn" style="display: none;">Schedule Skill Test</button>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#skillTestModal" id="scheduleSkillTestBtn" style="display: none;" onclick="prepareSkillTestModal()">Schedule Skill Test</button>
+
 <!-- Modal -->
 <div class="modal fade" id="pdfModal" tabindex="-1" role="dialog" aria-labelledby="pdfModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -93,7 +95,6 @@
         </div>
     </div>
 </div>
-
 <!-- Skill Test Modal -->
 <div class="modal fade" id="skillTestModal" tabindex="-1" role="dialog" aria-labelledby="skillTestModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" role="document">
@@ -132,11 +133,14 @@
                             <!-- Options will be dynamically populated -->
                         </select>
                     </div>
-
+                    <div class="form-group">
+                        <label for="candidateEmails">Candidate Emails</label>
+                        <textarea class="form-control" id="Email" name="Email" placeholder="Enter emails separated by commas" required></textarea>
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="dismissModal()">Close</button>
                 <button type="button" class="btn btn-primary" onclick="scheduleTest()">Schedule</button>
             </div>
         </div>

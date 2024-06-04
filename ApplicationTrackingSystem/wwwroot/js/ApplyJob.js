@@ -45,11 +45,9 @@
         }
     }
 
-    // Initial check to show/hide the Schedule Skill Test button
     updateShortlistCount();
 });
 
-// Separate functions for adding and removing shortlist candidates
 function addShortlist(id) {
     $.ajax({
         url: '/ApplyJob/AddToShortlist',
@@ -74,7 +72,6 @@ function removeShortlist(id) {
     });
 }
 
-// Function to sort table by column name and direction
 function sortTable(columnName, direction = 'asc') {
     var url = window.location.href;
     if (url.includes('?')) {
@@ -83,8 +80,6 @@ function sortTable(columnName, direction = 'asc') {
         url = '@Url.Action("Index", "ApplyJob")';
     }
     var searchParams = new URLSearchParams(window.location.search);
-
-    // Set sorting parameters in the URL
     searchParams.set('sortBy', columnName);
     searchParams.set('sortOrder', direction);
     window.location.href = url + '?' + searchParams.toString();
@@ -113,20 +108,20 @@ $(document).ready(function () {
 });
 
 
-
 function scheduleTest() {
     var testType = $('#testType').val();
     var testDate = $('#testDate').val();
     var startTime = $('#startTime').val();
     var duration = $('#duration').val();
-    var formLink = $('#formLink').val(); // Get the selected form link from the dropdown
-
+    var formLink = $('#formLink').val();
+    var Email = $('#Email').val().split(',').map(email => email.trim());
     var data = {
         testType: testType,
         testDate: testDate,
         startTime: startTime,
         duration: duration,
-        selectedLink: formLink // Include the selected form link in the data
+        selectedLink: formLink,
+        email: Email
     };
 
     $.ajax({
@@ -137,13 +132,12 @@ function scheduleTest() {
         success: function (response) {
             if (response.success) {
                 alert('Skill test scheduled successfully.');
-                $('#skillTestModal').modal('hide');
             } else {
                 alert('Failed to schedule skill test.');
             }
         },
-        error: function () {
-            alert('Error scheduling skill test.');
+        error: function (xhr) {
+            alert('Error scheduling skill test. ' + xhr.responseText);
         }
     });
 }
@@ -171,4 +165,51 @@ function deleteItem(id) {
             }
         });
     }
+}
+function removeShortlist(id) {
+    $.ajax({
+        url: '/ApplyJob/RemoveFromShortlist',
+        type: 'POST',
+        data: { id: id },
+        success: function (data) {
+            $(`#shortlistTable tbody tr[data-id="${data.id}"]`).remove();
+            updateShortlistCount();
+        }
+    });
+}
+
+function updateShortlistCount() {
+    var count = $('#shortlistTable tbody tr').length;
+    if (count > 0) {
+        $('#scheduleSkillTestBtn').show();
+    } else {
+        $('#scheduleSkillTestBtn').hide();
+    }
+}
+
+$(document).ready(function () {
+    updateShortlistCount();
+});
+function prepareSkillTestModal() {
+    var emails = [];
+    $('#shortlistTable tbody tr').each(function () {
+        var email = $(this).find('td').eq(2).text().trim();
+        if (email) {
+            emails.push(email);
+        }
+    });
+
+    $('#Email').val(emails.join(', '));
+    $('#skillTestModal').modal('show');
+}
+
+$(document).ready(function () {
+    $('#skillTestModal').modal({
+        backdrop: 'static',
+        keyboard: false,
+        hide: true
+    });
+});
+function dismissModal() {
+    $('#skillTestModal').modal('hide');
 }
