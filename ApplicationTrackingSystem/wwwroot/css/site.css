@@ -20,3 +20,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+/* Override modal backdrop styling to remove blur */
+.modal-backdrop {
+    filter: none !important;
+}

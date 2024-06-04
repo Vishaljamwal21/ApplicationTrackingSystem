@@ -1,20 +1,30 @@
 ﻿@{
-    ViewData["Title"] = "TEST";
-}
-<h1 class="text-center">@ViewData["Title"]</h1>
-
-@{
-    var selectedLink = TempData["SelectedLink"] as string;
+    ViewData["Title"] = "Test Response";
+    var selectedLink = ViewData["SelectedLink"].ToString();
 }
 
-<div class="container-fluid d-flex justify-content-center align-items-center" style="height: 100vh;">
-    @if (!string.IsNullOrEmpty(selectedLink))
-    {
-        <iframe src="@selectedLink" width="100%" height="100%" frameborder="0" marginwidth="0" marginheight="0" style="border: none; max-width: 100%; max-height: 100vh;" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen></iframe>
-    }
-    else
-    {
-        <p class="text-center">No test link selected.</p>
-    }
-</div>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewData["Title"]</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
 
+        iframe {
+            flex: 1;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h2 class="text-center">@ViewData["Title"]</h2>
+    <div>
+        <iframe id="embeddedSheet" width="1200" height="600" frameborder="0" scrolling="no" src="@selectedLink"></iframe>
+    </div>
+</body>
+</html>

@@ -23,7 +23,6 @@ namespace ApplicationTrackingSystem.Controllers
         {
             _unitOfWork = unitOfWork;
             _webHostEnvironment = webHostEnvironment;
-            // Set EPPlus license context
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             _emailSender = emailSender;
         }
@@ -31,7 +30,6 @@ namespace ApplicationTrackingSystem.Controllers
         public IActionResult Index(int pageNumber = 1, int pageSize = 10, string sortBy = "Name", string sortOrder = "asc", string searchString = "")
         {
             var applyJobs = _unitOfWork.ApplyJob.GetAll(includeProperties: "JobPost");
-            // Apply searching
             if (!string.IsNullOrEmpty(searchString))
             {
                 applyJobs = applyJobs.Where(job => job.Name.Contains(searchString) || job.Email.Contains(searchString));
