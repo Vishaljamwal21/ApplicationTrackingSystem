@@ -12,7 +12,7 @@
             <div class="job-title-box text-center bg-light p-2 rounded mb-4">
                 <h5 class="text-dark">@ViewData["JobTitle"]</h5>
             </div>
-            <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <form asp-action="Create" method="post" enctype="multipart/form-data" id="applyForm">
                 <input type="hidden" asp-for="JobPostId" />
                 <div class="form-group">
                     <label asp-for="Name" class="control-label text-white">Name<span class="text-danger">*</span></label>
@@ -35,9 +35,27 @@
                     <span asp-validation-for="BriefYourself" class="text-danger"></span>
                 </div><br />
                 <div class="form-group">
+                    <label asp-for="Experience" class="control-label text-white">Experience<span class="text-danger">*</span></label>
+                    <select asp-for="Experience" class="form-control" required>
+                        <option value="0-1">0 - 1 year</option>
+                        <option value="1-2">1 - 2 years</option>
+                        <option value="2-3">2 - 3 years</option>
+                        <option value="3-4">3 - 4 years</option>
+                        <option value="4-5">4 - 5 years</option>
+                    </select>
+                    <span asp-validation-for="Experience" class="text-danger"></span>
+                </div><br />
+                <div class="form-group">
+                    <label asp-for="Skills" class="control-label text-white">Skills<span class="text-danger">*</span></label>
+                    <textarea asp-for="Skills" class="form-control" required></textarea>
+                    <span asp-validation-for="Skills" class="text-danger"></span>
+                </div><br />
+
+                <div class="form-group">
                     <label asp-for="UploadCV" class="control-label text-white">Upload CV</label>
-                    <input type="file" name="file" class="form-control-file text-danger" />
-                    <span asp-validation-for="UploadCV" class="text-danger "></span>
+                    <input type="file" name="file" class="form-control-file text-danger" accept=".pdf" id="uploadCV" />
+                    <small class="form-text text-muted">PDF files only.</small>
+                    <span asp-validation-for="UploadCV" class="text-danger"></span>
                 </div><br />
                 <div class="form-group text-center">
                     <input type="submit" value="Apply" class="btn btn-primary" />
@@ -51,6 +69,20 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+    <script>
+        document.getElementById('applyForm').addEventListener('submit', function (event) {
+            var fileInput = document.getElementById('uploadCV');
+            var filePath = fileInput.value;
+            var allowedExtensions = /(\.pdf)$/i;
+
+            if (!allowedExtensions.exec(filePath)) {
+                alert('Please upload a file in PDF format.');
+                fileInput.value = '';
+                event.preventDefault();
+                return false;
+            }
+        });
+    </script>
 }
 
 <style>
@@ -58,4 +90,3 @@
         border: 2px solid #007bff;
     }
 </style>
-
