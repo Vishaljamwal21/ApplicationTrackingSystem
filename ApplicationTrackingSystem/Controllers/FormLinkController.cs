@@ -43,11 +43,11 @@ namespace ApplicationTrackingSystem.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (formLink.Id == 0) // If Id is 0, it's a new form link
+                if (formLink.Id == 0) 
                 {
                     _unitOfWork.FormLink.Add(formLink);
                 }
-                else // Otherwise, it's an existing form link being edited
+                else 
                 {
                     var existingFormLink = _unitOfWork.FormLink.Get(formLink.Id);
                     if (existingFormLink == null)
