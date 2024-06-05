@@ -43,9 +43,11 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="ApplyJob" asp-action="Index">Review Jobs</a>
+                        </li></li><li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="TestLink" asp-action="Index">Test Response</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="TestLink" asp-action="Index">Test Form</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="FormLink" asp-action="Index">Form Link</a>
                         </li>
                         @if (SignInManager.IsSignedIn(User) && UserManager.IsInRoleAsync(UserManager.GetUserAsync(User).Result, "Admin").Result)
                         {

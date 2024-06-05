@@ -23,7 +23,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.2" />
-    <PackageReference Include="SendGrid" Version="9.29.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,6 +33,7 @@
 
   <ItemGroup>
     <Folder Include="Views\JobPost\" />
+    <Folder Include="wwwroot\Files\CV\" />
     <Folder Include="wwwroot\Files\CV\" />
   </ItemGroup>
 

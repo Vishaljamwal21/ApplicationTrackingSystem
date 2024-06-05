@@ -13,5 +13,6 @@ namespace ApplicationTrackingSystem.Models
         public string StartTime { get; set; }
         public int Duration { get; set; }
         public string SelectedLink { get; set; }
+        public List<string> Email { get; set; }
     }
 }

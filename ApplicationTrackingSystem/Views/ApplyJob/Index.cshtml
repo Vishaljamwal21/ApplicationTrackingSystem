@@ -22,6 +22,8 @@
             <th>Phone No. <a href="#" onclick="sortTable('PhoneNumber')">▲</a> <a href="#" onclick="sortTable('PhoneNumber', 'desc')">▼</a></th>
             <th>Email <a href="#" onclick="sortTable('Email')">▲</a> <a href="#" onclick="sortTable('Email', 'desc')">▼</a></th>
             <th>Brief Yourself</th>
+            <th>Experience</th>
+            <th>Skills</th>
             <th>Action Buttons</th>
         </tr>
     </thead>
@@ -36,6 +38,8 @@
                 <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
                 <td>@Html.DisplayFor(modelItem => item.Email)</td>
                 <td>@Html.DisplayFor(modelItem => item.BriefYourself)</td>
+                <td>@Html.DisplayFor(modelItem => item.Experience)</td>
+                <td>@Html.DisplayFor(modelItem => item.Skills)</td>
                 <td>
                     <div class="btn-group" role="group" aria-label="Actions">
                         <a href="@Url.Action("DownloadCV", new { id = item.Id })" class="btn btn-info" title="Download"><i class="fas fa-download"></i> Download CV</a>|
@@ -57,6 +61,7 @@
         }
     </ul>
 </nav>
+<hr />
 <!-- Shortlist section -->
 <h3>Shortlisted Candidates</h3>
 <table id="shortlistTable" class="table">
@@ -68,12 +73,31 @@
         </tr>
     </thead>
     <tbody>
-       
+        <!-- "No Records Found" Modal -->
+        <div class="modal fade" id="noRecordsModal" tabindex="-1" role="dialog" aria-labelledby="noRecordsModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="noRecordsModalLabel">No Records Found</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        No records were found matching your criteria.
+                    </div>
+                    <div class="modal-footer">                    
+                        <button type="button" class="btn btn-secondary" onclick="navigateBack()">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </tbody>
 </table><br />
 
 <!-- Skill Test Button -->
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#skillTestModal" id="scheduleSkillTestBtn" style="display: none;">Schedule Skill Test</button>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#skillTestModal" id="scheduleSkillTestBtn" style="display: none;" onclick="prepareSkillTestModal()">Schedule Skill Test</button>
+
 <!-- Modal -->
 <div class="modal fade" id="pdfModal" tabindex="-1" role="dialog" aria-labelledby="pdfModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -93,9 +117,9 @@
         </div>
     </div>
 </div>
-
 <!-- Skill Test Modal -->
 <div class="modal fade" id="skillTestModal" tabindex="-1" role="dialog" aria-labelledby="skillTestModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+  
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -129,21 +153,42 @@
                     <div class="form-group">
                         <label for="formLink">Select Form Link</label>
                         <select class="form-control" id="formLink" name="formLink">
-                            <option value="">Select a form</option>
-                            <option value="level1">Level-1</option>
-                            <option value="level2">Level-2</option>
-                            <!-- Add more options as needed -->
+                            <!-- Options will be dynamically populated -->
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="candidateEmails">Candidate Emails</label>
+                        <textarea class="form-control" id="Email" name="Email" placeholder="Enter emails separated by commas" required></textarea>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="dismissModal()">Close</button>
                 <button type="button" class="btn btn-primary" onclick="scheduleTest()">Schedule</button>
             </div>
         </div>
     </div>
 </div>
+
 @section Scripts {
     <script src="~/js/ApplyJob.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Function to show modal when no records are found
+            function showNoRecordsModal() {
+                $('#noRecordsModal').modal('show');
+            }
+
+            // Check if the jobs table is empty
+            if ($('#jobsTable tbody').children().length === 0) {
+                // Show the modal
+                showNoRecordsModal();
+            }
+        });
+    </script>
+    <script>
+        function navigateBack() {
+            $('#noRecordsModal').modal('hide'); // Close the modal
+        }
+    </script>
 }
