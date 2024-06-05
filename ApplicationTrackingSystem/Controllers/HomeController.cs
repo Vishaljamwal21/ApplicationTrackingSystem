@@ -19,9 +19,9 @@ namespace ApplicationTrackingSystem.Controllers
 
         public IActionResult Index()
         {
-            var jobPosts = _unitOfWork.JobPost.GetAll();
+            var today = DateTime.Today;
+            var jobPosts = _unitOfWork.JobPost.GetAll().Where(j => j.ToDate >= today).ToList();
             return View(jobPosts);
-           
         }
 
         public IActionResult Detail(int id)

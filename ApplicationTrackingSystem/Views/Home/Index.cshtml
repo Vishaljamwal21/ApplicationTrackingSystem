@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Job Posts";
-    var todayDate = ViewBag.TodayDate as string;
 }
 
 <!DOCTYPE html>
@@ -60,7 +59,7 @@
                 <div class="col-md-4 mb-4">
                     <div class="card">
                         <div class="card-body">
-                            <p class="card-title"> @jobPost.Title</p>
+                            <p class="card-title">@jobPost.Title</p>
                             <p><strong>Skill:</strong> @jobPost.CandidateSkill</p>
                             <p><strong>Experience:</strong> @jobPost.Experience</p>
                             <p><strong>Qualification:</strong> @jobPost.Qualification</p>
@@ -72,7 +71,6 @@
             }
         </div>
     </div>
-
     <script>
         $(document).ready(function () {
             $('#jobPostsTable').DataTable();
