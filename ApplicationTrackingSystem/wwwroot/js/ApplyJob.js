@@ -77,12 +77,34 @@ function sortTable(columnName, direction = 'asc') {
     if (url.includes('?')) {
         url = url.split('?')[0];
     } else {
-        url = '@Url.Action("Index", "ApplyJob")';
+        url = '/ApplyJob/Index';
     }
     var searchParams = new URLSearchParams(window.location.search);
     searchParams.set('sortBy', columnName);
     searchParams.set('sortOrder', direction);
     window.location.href = url + '?' + searchParams.toString();
+}
+ 
+function searchTable() {
+    var input, filter, table, tr, td, i, j, txtValue;
+    input = document.getElementById("searchInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("jobsTable");
+    tr = table.getElementsByTagName("tr");
+ 
+    for (i = 1; i < tr.length; i++) {
+        tr[i].style.display = "none";
+        td = tr[i].getElementsByTagName("td");
+        for (j = 0; j < td.length; j++) {
+            if (td[j]) {
+                txtValue = td[j].textContent || td[j].innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                    break;
+                }
+            }
+        }
+    }
 }
 
 $(document).ready(function () {
