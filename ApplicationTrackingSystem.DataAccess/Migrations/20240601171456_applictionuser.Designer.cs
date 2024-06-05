@@ -4,6 +4,7 @@ using ApplicationTrackingSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApplicationTrackingSystem.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240601171456_applictionuser")]
+    partial class applictionuser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,10 +42,6 @@ namespace ApplicationTrackingSystem.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Experience")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("JobPostId")
                         .HasColumnType("int");
 
@@ -55,10 +54,6 @@ namespace ApplicationTrackingSystem.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Skills")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("UploadCV")
                         .HasColumnType("nvarchar(max)");
 
@@ -67,25 +62,6 @@ namespace ApplicationTrackingSystem.DataAccess.Migrations
                     b.HasIndex("JobPostId");
 
                     b.ToTable("applyjobs");
-                });
-
-            modelBuilder.Entity("ApplicationTrackingSystem.Models.FormLinks", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Links")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("formLinks");
                 });
 
             modelBuilder.Entity("ApplicationTrackingSystem.Models.JobPost", b =>

@@ -14,5 +14,6 @@ namespace ApplicationTrackingSystem.Data
         public DbSet<Applyjob>applyjobs { get; set; }
         public DbSet<FormLinks> formLinks { get; set; }
 
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
     }
 }
