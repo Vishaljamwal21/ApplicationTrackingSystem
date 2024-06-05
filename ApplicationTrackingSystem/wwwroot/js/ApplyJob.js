@@ -131,37 +131,49 @@ $(document).ready(function () {
 
 
 function scheduleTest() {
-    var testType = $('#testType').val();
-    var testDate = $('#testDate').val();
-    var startTime = $('#startTime').val();
-    var duration = $('#duration').val();
-    var formLink = $('#formLink').val();
-    var Email = $('#Email').val().split(',').map(email => email.trim());
-    var data = {
-        testType: testType,
-        testDate: testDate,
-        startTime: startTime,
-        duration: duration,
-        selectedLink: formLink,
-        email: Email
-    };
-
-    $.ajax({
-        url: '/TestLink/SaveSelectedLink',
-        type: 'POST',
-        contentType: 'application/json',
-        data: JSON.stringify(data),
-        success: function (response) {
-            if (response.success) {
-                alert('Skill test scheduled successfully.');
-            } else {
-                alert('Failed to schedule skill test.');
-            }
-        },
-        error: function (xhr) {
-            alert('Error scheduling skill test. ' + xhr.responseText);
+    var isValid = true;
+    $('#skillTestForm .form-control').each(function () {
+        if (!this.checkValidity()) {
+            $(this).addClass('is-invalid');
+            isValid = false;
+        } else {
+            $(this).removeClass('is-invalid');
         }
     });
+    if (isValid) {
+        var testType = $('#testType').val();
+        var testDate = $('#testDate').val();
+        var startTime = $('#startTime').val();
+        var duration = $('#duration').val();
+        var formLink = $('#formLink').val();
+        var Email = $('#Email').val().split(',').map(email => email.trim());
+        var data = {
+            testType: testType,
+            testDate: testDate,
+            startTime: startTime,
+            duration: duration,
+            selectedLink: formLink,
+            email: Email
+        };
+
+        $.ajax({
+            url: '/TestLink/SaveSelectedLink',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function (response) {
+                if (response.success) {
+                    alert('Skill test scheduled successfully.');
+                    dismissModal();
+                } else {
+                    alert('Failed to schedule skill test.');
+                }
+            },
+            error: function (xhr) {
+                alert('Error scheduling skill test. ' + xhr.responseText);
+            }
+        });
+    }
 }
 function editItem(itemId) {
     window.location.href ='/FormLink/CreateOrEdit' + '?id=' + itemId;
@@ -233,8 +245,23 @@ $(document).ready(function () {
     });
 });
 function dismissModal() {
+    $('#skillTestForm .form-control').removeClass('is-invalid');
+    $('#skillTestForm')[0].reset();
     $('#skillTestModal').modal('hide');
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
 }
+$(document).ready(function () {
+    function showNoRecordsModal() {
+        $('#noRecordsModal').modal('show');
+    }
+    if ($('#jobsTable tbody').children().length === 0) {
+        showNoRecordsModal();
+    }
+});
+function navigateBack() {
+    $('#noRecordsModal').modal('hide');
+}    
 // Function to load PDF preview
 function loadPDF(id) {
     $.ajax({

@@ -119,7 +119,7 @@
     </div>
 </div>
 <!-- Skill Test Modal -->
-<div class="modal fade" id="skillTestModal" tabindex="-1" role="dialog" aria-labelledby="skillTestModalLabel" aria-hidden="true" data-keyboard="false">
+<div class="modal fade" id="skillTestModal" tabindex="-1" role="dialog" aria-labelledby="skillTestModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -178,48 +178,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/ApplyJob.js"></script>
-    <script>
-        $(document).ready(function () {
-            // Function to show modal when no records are found
-            function showNoRecordsModal() {
-                $('#noRecordsModal').modal('show');
-            }
-
-            // Check if the jobs table is empty
-            if ($('#jobsTable tbody').children().length === 0) {
-                // Show the modal
-                showNoRecordsModal();
-            }
-        });
-
-        function navigateBack() {
-            $('#noRecordsModal').modal('hide'); // Close the modal
-        }
-
-        function scheduleTest() {
-            var isValid = true;
-            $('#skillTestForm .form-control').each(function () {
-                if (!this.checkValidity()) {
-                    $(this).addClass('is-invalid');
-                    isValid = false;
-                } else {
-                    $(this).removeClass('is-invalid');
-                }
-            });
-
-            if (isValid) {
-                // Proceed with scheduling the test
-                // Your logic to handle scheduling the test
-                alert('Test scheduled successfully!');
-            }
-        }
-
-        function dismissModal() {
-            // Reset form validation classes
-            $('#skillTestForm .form-control').removeClass('is-invalid');
-            // Hide the modal
-            $('#skillTestModal').modal('hide');
-        }
-    </script>
+    <script src="~/js/ApplyJob.js"></script>   
 }
