@@ -25,6 +25,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.6/pdfobject.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+
 </head>
 <body>
     <header>
@@ -71,7 +76,14 @@
             @RenderBody()
         </main>
     </div>
-
+        <div id="loader" style="display: none;">
+            <div class="ring">
+                <i class="fas fa-envelope"></i>
+                <p>Loading...</p>
+                <span></span>
+            </div>
+        </div>
+    
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
