@@ -1,5 +1,7 @@
-﻿using ApplicationTrackingSystem.DataAccess.Data.Repository.IRepository;
+﻿using ApplicationTrackingSystem.DataAccess.Data.Repository;
+using ApplicationTrackingSystem.DataAccess.Data.Repository.IRepository;
 using ApplicationTrackingSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -26,21 +28,27 @@ namespace ApplicationTrackingSystem.Controllers
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(JobPost jobPost)
+    [Authorize(Roles = "HR")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(JobPost jobPost)
+    {
+        if (ModelState.IsValid)
         {
-            int createdBy = 123;
+            var currentUser = User.Identity.Name;
             jobPost.DatePosted = DateTime.UtcNow;
-            jobPost.CreatedBy = createdBy.ToString();
+            jobPost.CreatedBy = currentUser;
             jobPost.CreatedAt = DateTime.Now;
 
             _unitOfWork.JobPost.Add(jobPost);
             _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
         }
+        return View(jobPost);
+    }
 
-        [HttpPost]
+
+    [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(JobPost jobPost)
         {
