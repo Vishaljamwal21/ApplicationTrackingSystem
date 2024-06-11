@@ -1,5 +1,7 @@
-﻿using ApplicationTrackingSystem.DataAccess.Data.Repository.IRepository;
+﻿using ApplicationTrackingSystem.DataAccess.Data.Repository;
+using ApplicationTrackingSystem.DataAccess.Data.Repository.IRepository;
 using ApplicationTrackingSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -17,8 +19,7 @@ namespace ApplicationTrackingSystem.Controllers
 
         public IActionResult Index()
         {
-            var jobPosts = _unitOfWork.JobPost.GetAll(); 
-            ViewBag.TodayDate = DateTime.Today.ToString("MMMM dd, yyyy");
+            var jobPosts = _unitOfWork.JobPost.GetAll();
             return View(jobPosts);
         }
 
@@ -27,29 +28,35 @@ namespace ApplicationTrackingSystem.Controllers
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(JobPost jobPost)
+    [Authorize(Roles = "HR")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult Create(JobPost jobPost)
+    {
+        if (ModelState.IsValid)
         {
-            
-                int createdBy = 123;
-                jobPost.DatePosted = DateTime.UtcNow;
-                jobPost.CreatedBy = createdBy.ToString();
-                jobPost.CreatedAt = DateTime.Now;
+            var currentUser = User.Identity.Name;
+            jobPost.DatePosted = DateTime.UtcNow;
+            jobPost.CreatedBy = currentUser;
+            jobPost.CreatedAt = DateTime.Now;
 
-                _unitOfWork.JobPost.Add(jobPost);
-                _unitOfWork.Save();
-                return RedirectToAction(nameof(Index));
-          
+            _unitOfWork.JobPost.Add(jobPost);
+            _unitOfWork.Save();
+            return RedirectToAction(nameof(Index));
         }
-        [HttpPost]
+        return View(jobPost);
+    }
+
+
+    [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(JobPost jobPost)
-        {         
-                _unitOfWork.JobPost.Update(jobPost);
-                _unitOfWork.Save();
-                return RedirectToAction(nameof(Index));           
+        {
+            _unitOfWork.JobPost.Update(jobPost);
+            _unitOfWork.Save();
+            return RedirectToAction(nameof(Index));
         }
+
         public IActionResult Edit(int id)
         {
             var jobPost = _unitOfWork.JobPost.Get(id);
@@ -59,30 +66,25 @@ namespace ApplicationTrackingSystem.Controllers
             }
             return View(jobPost);
         }
-        public IActionResult Delete(int id)
-        {
-            var jobPost = _unitOfWork.JobPost.Get(id);
-            if (jobPost == null)
-            {
-                return NotFound();
-            }
-            return View(jobPost);
-        }
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            var jobPost = _unitOfWork.JobPost.Get(id);
-            if (jobPost == null)
-            {
-                return NotFound();
-            }
-            _unitOfWork.JobPost.Remove(jobPost);
-            _unitOfWork.Save();
-            return RedirectToAction(nameof(Index));
-        }
 
-       
-
+        [HttpPost]
+        public JsonResult DeleteConfirmed(int id)
+        {
+            try
+            {
+                var jobPost = _unitOfWork.JobPost.Get(id);
+                if (jobPost != null)
+                {
+                    _unitOfWork.JobPost.Remove(jobPost);
+                    _unitOfWork.Save();
+                    return Json(new { success = true });
+                }
+                return Json(new { success = false, message = "Job post not found." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
     }
 }

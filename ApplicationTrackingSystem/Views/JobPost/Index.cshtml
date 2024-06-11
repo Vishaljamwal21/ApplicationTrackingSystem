@@ -1,69 +1,114 @@
-﻿    @model IEnumerable<ApplicationTrackingSystem.Models.JobPost>
+﻿@model IEnumerable<ApplicationTrackingSystem.Models.JobPost>
 
-    @{
-        ViewData["Title"] = "Job Posts";
-        var todayDate = ViewBag.TodayDate as string;
-    }
+@{
+    ViewData["Title"] = "Job Posts";
+    var todayDate = ViewBag.TodayDate as string;
+}
 
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>@ViewData["Title"] - ApplicationTrackingSystem</title>
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" />
-        <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-        <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    </head>
-    <body>
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
-                <h2>@ViewData["Title"]</h2>
-                <div>
-                    <strong>Today's Date:</strong> @todayDate
-                </div>
-            </div>
-            <table id="jobPostsTable" class="table table-striped table-hover table-bordered">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Candidate Skill</th>
-                        <th>Experience</th>
-                        <th>Qualification</th>
-                        <th>Description</th>
-                        <th>FromDate</th>
-                        <th>ToDate</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var jobPost in Model)
-                    {
-                        <tr>
-                            <td>@jobPost.Title</td>
-                            <td>@jobPost.CandidateSkill</td>
-                            <td>@jobPost.Experience</td>
-                            <td>@jobPost.Qualification</td>
-                            <td>@jobPost.Description</td>
-                            <td>@jobPost.FromDate</td>
-                            <td>@jobPost.ToDate</td>
-                        <td>
-                            <a asp-action="Edit" class="btn btn-success" asp-route-id="@jobPost.Id">Edit</a> |
-                            <a asp-action="Delete" class="btn btn-danger" asp-route-id="@jobPost.Id">Delete</a>
-                        </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-            <div class="d-flex justify-content-end mt-4">
-                <a asp-action="Create" class="btn btn-primary">Create</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - ApplicationTrackingSystem</title>
+</head>
+<body>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
+            <h2>@ViewData["Title"]</h2>
+            <div>
+                <strong>Today's Date:</strong> <span id="currentDate"></span>
             </div>
         </div>
+        <table id="jobPostsTable" class="table table-striped table-hover table-bordered ">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Candidate Skill</th>
+                    <th>Experience</th>
+                    <th>Qualification</th>
+                    <th>Description</th>
+                    <th>FromDate</th>
+                    <th>ToDate</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var jobPost in Model)
+                {
+                    <tr id="jobPost_@jobPost.Id">
+                        <td>@jobPost.Title</td>
+                        <td>@jobPost.CandidateSkill</td>
+                        <td>@jobPost.Experience</td>
+                        <td>@jobPost.Qualification</td>
+                        <td>@jobPost.Description</td>
+                        <td>@jobPost.FromDate.ToString("yyyy-MM-dd")</td>
+                        <td>@jobPost.ToDate.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <div style="display: flex;">
+                                <a asp-action="Edit" class="btn btn-success" asp-route-id="@jobPost.Id">
+                                    <i class="fas fa-edit"></i>
+                                </a>  
+                                <button class="btn btn-danger ml-2" onclick="confirmDelete(@jobPost.Id)">
+                                    <i class="fas fa-trash-alt"></i> 
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-end mt-4">
+            <a asp-action="Create" class="btn btn-primary">Create</a>
+        </div>
+    </div>
 
-        <script>
-            $(document).ready(function () {
-                $('#jobPostsTable').DataTable();
+    <script>
+        $(document).ready(function () {
+            $('#jobPostsTable').DataTable();
+        });
+
+        // Set current date
+        var today = new Date();
+        var formattedDate = today.toLocaleDateString('en-US', {
+            month: 'long',
+            day: '2-digit',
+            year: 'numeric'
+        });
+        $('#currentDate').text(formattedDate);
+
+        function confirmDelete(id) {
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this item!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            }).then((willDelete) => {
+                if (willDelete) {
+                    deleteJobPost(id);
+                }
             });
-        </script>
-    </body>
-    </html>
+        }
+
+        function deleteJobPost(id) {
+            $.ajax({
+                url: '@Url.Action("DeleteConfirmed")',
+                type: 'POST',
+                data: { id: id },
+                success: function (result) {
+                    if (result.success) {
+                        $('#jobPost_' + id).remove();
+                        swal("Deleted!", "The job post has been deleted.", "success");
+                    } else {
+                        swal("Error!", result.message, "error");
+                    }
+                },
+                error: function (ex, status, error) {
+                    swal("Error!", "There was an error deleting the job post.", "error");
+                }
+            });
+        }
+    </script>
+</body>
+</html>
