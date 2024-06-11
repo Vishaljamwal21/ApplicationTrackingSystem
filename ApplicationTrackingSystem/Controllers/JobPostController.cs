@@ -18,7 +18,6 @@ namespace ApplicationTrackingSystem.Controllers
         public IActionResult Index()
         {
             var jobPosts = _unitOfWork.JobPost.GetAll();
-            ViewBag.TodayDate = DateTime.Today.ToString("MMMM dd, yyyy");
             return View(jobPosts);
         }
 

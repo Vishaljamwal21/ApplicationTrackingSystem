@@ -17,7 +17,7 @@
         <div class="d-flex justify-content-between align-items-center mt-4 mb-2">
             <h2>@ViewData["Title"]</h2>
             <div>
-                <strong>Today's Date:</strong> @todayDate
+                <strong>Today's Date:</strong> <span id="currentDate"></span>
             </div>
         </div>
         <table id="jobPostsTable" class="table table-striped table-hover table-bordered ">
@@ -67,6 +67,15 @@
         $(document).ready(function () {
             $('#jobPostsTable').DataTable();
         });
+
+        // Set current date
+        var today = new Date();
+        var formattedDate = today.toLocaleDateString('en-US', {
+            month: 'long',
+            day: '2-digit',
+            year: 'numeric'
+        });
+        $('#currentDate').text(formattedDate);
 
         function confirmDelete(id) {
             swal({
