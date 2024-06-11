@@ -10,43 +10,45 @@
     <a href="@Url.Action("ExportToExcel", "ApplyJob")" class="btn btn-success">Export All to Excel</a>
 </div>
 
-<table id="jobsTable" class="table">
-    <thead>
-        <tr>
-            <th>S.No.</th>
-            <th>Job Title</th>
-            <th>Name</th>
-            <th>Phone No.</th>
-            <th>Email</th>
-            <th>Brief Yourself</th>
-            <th>Experience</th>
-            <th>Skills</th>
-            <th>Action Buttons</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+<div class="table-responsive">
+    <table id="jobsTable" class="table table-striped table-bordered">
+        <thead>
             <tr>
-
-                <td><input type="checkbox" class="shortlist-checkbox" data-id="@item.Id" /></td>
-                <td>@Html.DisplayFor(modelItem => item.JobPost.Title)</td>
-                <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
-                <td>@Html.DisplayFor(modelItem => item.Email)</td>
-                <td>@Html.DisplayFor(modelItem => item.BriefYourself)</td>
-                <td>@Html.DisplayFor(modelItem => item.Experience)</td>
-                <td>@Html.DisplayFor(modelItem => item.Skills)</td>
-                <td>
-                    <div class="btn-group" role="group" aria-label="Actions">
-                        <a href="@Url.Action("DownloadCV", new { id = item.Id })" class="btn btn-info" title="Download"><i class="fas fa-download"></i> Download CV</a>|
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#pdfModal" onclick="loadPDF('@item.Id')">Preview PDF</button>
-                    </div>
-                </td>
+                <th>S.No.</th>
+                <th>Job Title</th>
+                <th>Name</th>
+                <th>Phone No.</th>
+                <th>Email</th>
+                <th>Brief Yourself</th>
+                <th>Experience</th>
+                <th>Skills</th>
+                <th>Action Buttons</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><input type="checkbox" class="shortlist-checkbox" data-id="@item.Id" /></td>
+                    <td>@Html.DisplayFor(modelItem => item.JobPost.Title)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                    <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                    <td>@Html.DisplayFor(modelItem => item.BriefYourself)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Experience)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Skills)</td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Actions">
+                            <a href="@Url.Action("DownloadCV", new { id = item.Id })" class="btn btn-info" title="Download"><i class="fas fa-download"></i> Download CV</a>|
+                            <button type="button" class="btn btn-info" data-toggle="modal" data-target="#pdfModal" onclick="loadPDF('@item.Id')">Preview PDF</button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
 <hr />
 <!-- Shortlist section -->
 <h3>Shortlisted Candidates</h3>
