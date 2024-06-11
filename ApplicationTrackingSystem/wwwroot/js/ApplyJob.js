@@ -128,8 +128,13 @@ $(document).ready(function () {
         });
     }
 });
+function showLoader() {
+    $('#loader').show();
+}
 
-
+function hideLoader() {
+    $('#loader').hide();
+}
 function scheduleTest() {
     var isValid = true;
     $('#skillTestForm .form-control').each(function () {
@@ -155,6 +160,8 @@ function scheduleTest() {
             selectedLink: formLink,
             email: Email
         };
+        dismissModal();
+        $('#loader').show();
 
         $.ajax({
             url: '/TestLink/SaveSelectedLink',
@@ -162,19 +169,26 @@ function scheduleTest() {
             contentType: 'application/json',
             data: JSON.stringify(data),
             success: function (response) {
+                $('#loader').hide();
                 if (response.success) {
-                    alert('Skill test scheduled successfully.');
-                    dismissModal();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Skill test scheduled successfully.'
+                    });
                 } else {
                     alert('Failed to schedule skill test.');
                 }
             },
             error: function (xhr) {
+                $('#loader').hide(); 
                 alert('Error scheduling skill test. ' + xhr.responseText);
             }
         });
     }
 }
+
+
 function editItem(itemId) {
     window.location.href ='/FormLink/CreateOrEdit' + '?id=' + itemId;
 }
@@ -275,3 +289,24 @@ function loadPDF(id) {
         }
     });
 }
+$(document).ready(function () {
+    $('#jobsTable').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "pageLength": 10,
+        "dom": 'Bfrtip',
+        "buttons": [
+            {
+                extend: 'excelHtml5',
+                text: 'Export to Excel',
+                className: 'btn btn-success mb-2'
+            }
+        ]
+    });
+
+
+});

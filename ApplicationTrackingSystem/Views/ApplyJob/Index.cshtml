@@ -10,18 +10,14 @@
     <a href="@Url.Action("ExportToExcel", "ApplyJob")" class="btn btn-success">Export All to Excel</a>
 </div>
 
-<div class="mb-2">
-    <input type="text" id="searchInput" placeholder="Search..." class="form-control col-lg-5" onkeyup="searchTable()">
-</div>
-<br/>
 <table id="jobsTable" class="table">
     <thead>
         <tr>
             <th>S.No.</th>
             <th>Job Title</th>
-            <th>Name <a href="#" onclick="sortTable('Name')">▲</a> <a href="#" onclick="sortTable('Name', 'desc')">▼</a></th>
-            <th>Phone No. <a href="#" onclick="sortTable('PhoneNumber')">▲</a> <a href="#" onclick="sortTable('PhoneNumber', 'desc')">▼</a></th>
-            <th>Email <a href="#" onclick="sortTable('Email')">▲</a> <a href="#" onclick="sortTable('Email', 'desc')">▼</a></th>
+            <th>Name</th>
+            <th>Phone No.</th>
+            <th>Email</th>
             <th>Brief Yourself</th>
             <th>Experience</th>
             <th>Skills</th>
@@ -51,17 +47,6 @@
         }
     </tbody>
 </table>
-<!-- Pagination -->
-<nav>
-    <ul class="pagination">
-        @for (int i = 1; i <= ViewBag.TotalPages; i++)
-        {
-            <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
-                <a class="page-link" href="?pageNumber=@i&pageSize=@ViewBag.PageSize&sortBy=@ViewBag.SortBy&sortOrder=@ViewBag.SortOrder&searchString=@ViewBag.SearchString">@i</a>
-            </li>
-        }
-    </ul>
-</nav>
 <hr />
 <!-- Shortlist section -->
 <h3>Shortlisted Candidates</h3>
@@ -178,5 +163,5 @@
 </div>
 
 @section Scripts {
-    <script src="~/js/ApplyJob.js"></script>   
+    <script src="~/js/ApplyJob.js"></script>
 }

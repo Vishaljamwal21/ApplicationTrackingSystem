@@ -27,37 +27,12 @@ namespace ApplicationTrackingSystem.Controllers
             _emailSender = emailSender;
         }
 
-        public IActionResult Index(int pageNumber = 1, int pageSize = 10, string sortBy = "Name", string sortOrder = "asc", string searchString = "")
+        public IActionResult Index()
         {
-            var applyJobs = _unitOfWork.ApplyJob.GetAll(includeProperties: "JobPost");
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                applyJobs = applyJobs.Where(job => job.Name.Contains(searchString) || job.Email.Contains(searchString));
-            }
-            // Apply sorting
-            switch (sortBy)
-            {
-                case "Name":
-                    applyJobs = sortOrder == "asc" ? applyJobs.OrderBy(job => job.Name) : applyJobs.OrderByDescending(job => job.Name);
-                    break;
-                case "PhoneNumber":
-                    applyJobs = sortOrder == "asc" ? applyJobs.OrderBy(job => job.PhoneNumber) : applyJobs.OrderByDescending(job => job.PhoneNumber);
-                    break;
-                default:
-                    applyJobs = applyJobs.OrderBy(job => job.Name);
-                    break;
-            }
-            // Apply paging
-            var totalItems = applyJobs.Count();
-            var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-            var paginatedJobs = applyJobs.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-            ViewBag.TotalPages = totalPages;
-            ViewBag.CurrentPage = pageNumber;
-            ViewBag.SortOrder = sortOrder;
-            ViewBag.SortBy = sortBy;
-            ViewBag.SearchString = searchString;
-            return View(paginatedJobs);
+            var applyJobs = _unitOfWork.ApplyJob.GetAll(includeProperties: "JobPost").ToList();
+            return View(applyJobs);
         }
+
         public IActionResult Create(int jobPostId)
         {
             var jobPost = _unitOfWork.JobPost.Get(jobPostId);
