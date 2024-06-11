@@ -14,24 +14,20 @@ namespace ApplicationTrackingSystem.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-
         public IActionResult Index()
         {
             var jobPosts = _unitOfWork.JobPost.GetAll(); 
             ViewBag.TodayDate = DateTime.Today.ToString("MMMM dd, yyyy");
             return View(jobPosts);
         }
-
         public IActionResult Create()
         {
             return View();
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(JobPost jobPost)
-        {
-            
+        {            
                 int createdBy = 123;
                 jobPost.DatePosted = DateTime.UtcNow;
                 jobPost.CreatedBy = createdBy.ToString();
@@ -39,8 +35,7 @@ namespace ApplicationTrackingSystem.Controllers
 
                 _unitOfWork.JobPost.Add(jobPost);
                 _unitOfWork.Save();
-                return RedirectToAction(nameof(Index));
-          
+                return RedirectToAction(nameof(Index));          
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -81,8 +76,5 @@ namespace ApplicationTrackingSystem.Controllers
             _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
         }
-
-       
-
     }
 }

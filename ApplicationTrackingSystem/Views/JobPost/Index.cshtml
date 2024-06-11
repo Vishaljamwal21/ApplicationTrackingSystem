@@ -41,10 +41,64 @@
                     {
                         <tr>
                             <td>@jobPost.Title</td>
-                            <td>@jobPost.CandidateSkill</td>
-                            <td>@jobPost.Experience</td>
-                            <td>@jobPost.Qualification</td>
-                            <td>@jobPost.Description</td>
+                           @*  <td>@jobPost.CandidateSkill</td> *@
+
+                        <td class="truncate" data-full-text="@jobPost.CandidateSkill">
+                            @{
+                                if (!string.IsNullOrEmpty(jobPost.CandidateSkill))
+                                {
+                                    string truncatedText = jobPost.CandidateSkill.Length > 5 ? jobPost.CandidateSkill.Substring(0, 5) + "..." : jobPost.CandidateSkill;
+                                    @truncatedText
+                                }
+                            }
+                        </td>
+
+
+                        <td class="truncate" data-full-text="@jobPost.Experience">
+                            @{
+                                if (!string.IsNullOrEmpty(jobPost.Experience))
+                                {
+                                    string truncatedText = jobPost.Experience.Length > 5 ? jobPost.Experience.Substring(0, 5) + "..." : jobPost.Experience;
+                                    @truncatedText
+                                }
+                            }
+                        </td>
+
+                        <td class="truncate" data-full-text="@jobPost.Qualification">
+                            @{
+                                if (!string.IsNullOrEmpty(jobPost.Qualification))
+                                {
+                                    string truncatedText = jobPost.Qualification.Length > 5 ? jobPost.Qualification.Substring(0, 5) + "..." : jobPost.Qualification;
+                                    @truncatedText
+                                }
+                            }
+                        </td>
+                        
+                        <td style="word-wrap: break-word; max-width: 300px;">
+                            @if (!string.IsNullOrEmpty(jobPost.Description))
+                            {
+                                string[] words = jobPost.Description.Split(' ');
+                                if (words.Length > 30)
+                                {
+                                    for (int i = 0; i < 10; i++)
+                                    {
+                                        @words[i]
+                                    }
+                                    <br />
+                                    for (int i = 10; i < 20; i++)
+                                    {
+                                        @words[i]
+                                    }
+                                    <span>...</span>
+                                }
+                                else
+                                {
+                                    @jobPost.Description
+                                }
+                            }
+                        </td>
+                        
+
                             <td>@jobPost.FromDate</td>
                             <td>@jobPost.ToDate</td>
                         <td>
@@ -65,5 +119,6 @@
                 $('#jobPostsTable').DataTable();
             });
         </script>
+
     </body>
     </html>

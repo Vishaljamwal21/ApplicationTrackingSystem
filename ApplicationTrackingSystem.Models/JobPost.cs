@@ -11,7 +11,7 @@ namespace ApplicationTrackingSystem.Models
     {
         public int Id { get; set; }
         [Required]
-        [StringLength(100)]
+        [StringLength(50)]
         public string Title { get; set; }
         [DataType(DataType.Date)]
         public DateTime DatePosted { get; set; }
@@ -20,12 +20,16 @@ namespace ApplicationTrackingSystem.Models
         [DataType(DataType.Date)]
         public DateTime ToDate { get; set; }
         [Required]
+        [StringLength(30)]
         public string? CandidateSkill { get; set; }
         [Required]
+        [StringLength(30)]
         public string? Experience {  get; set; }
         [Required]
+        [StringLength(30)]
         public string? Qualification { get; set; }
-        [Required]      
+        [Required]
+        [StringLength(1000)] 
         public string? Description { get; set; }
         [DataType(DataType.Date)]
         public DateTime? CreatedAt { get; set; }

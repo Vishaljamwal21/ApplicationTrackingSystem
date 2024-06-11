@@ -1,10 +1,4 @@
-﻿@model ApplicationTrackingSystem.Models.JobPost
-
-@{
-    ViewData["Title"] = "Detail";
-}
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -71,14 +65,63 @@
             <div class="col-md-8 offset-md-2 mb-4">
                 <div class="detail-body">
                     <h5 class="detail-title">@Model.Title</h5>
-                    <p><strong>Skill:</strong> @Model.CandidateSkill</p>
-                    <p><strong>Experience:</strong> @Model.Experience</p>
-                    <p><strong>Qualification:</strong> @Model.Qualification</p>                    
-                    <p><strong>Description:</strong> @Model.Description</p>
-                    <p><strong>Contact:</strong> <a href="mailto:abhithakur2416@gmail.com">abhithakur2416@gmail.com</a></p>
-                    <p><strong>Last Date to Apply:</strong> @Model.ToDate.ToString("yyyy-MM-dd")</p>
-                    <a href="@Url.Action("Create", "ApplyJob", new { jobPostId = Model.Id })" class="btn btn-primary">Apply</a>
-                    <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p><strong>Skill:</strong></p>
+                        </div>
+                        <div class="col-md-8">
+                            <p>@Model.CandidateSkill</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p><strong>Experience:</strong></p>
+                        </div>
+                        <div class="col-md-8">
+                            <p>@Model.Experience</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p><strong>Qualification:</strong></p>
+                        </div>
+                        <div class="col-md-8">
+                            <p>@Model.Qualification</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p><strong>Description:</strong></p>
+                        </div>
+                        <div class="col-md-8" style="max-height: 200px; overflow-y: auto;">
+                            @foreach (var line in Model.Description.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries))
+                            {
+                                <p>@line</p>
+                            }
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p><strong>Contact:</strong></p>
+                        </div>
+                        <div class="col-md-8">
+                            <p><a href="mailto:abhithakur2416@gmail.com">abhithakur2416@gmail.com</a></p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p><strong>Last Date to Apply:</strong></p>
+                        </div>
+                        <div class="col-md-8">
+                            <p>@Model.ToDate.ToString("yyyy-MM-dd")</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a href="@Url.Action("Create", "ApplyJob", new { jobPostId = Model.Id })" class="btn btn-primary">Apply</a>
+                            <a href="javascript:history.back()" class="btn btn-secondary">Back</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
